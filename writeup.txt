@@ -1,0 +1,43 @@
+﻿{Play Prediction}:
+In this section, the Bayesian Personalized Ranking (BPR) method was employed to estimate a personalized ranking function for each user, particularly suitable for scenarios with implicit feedback, such as clicks, purchases, or binary classification results. The BPR method was implemented using the TensorFlow library, using a foundational code structure provided in the textbook.
+The prediction function f(u,i)=α+βi+γu⋅γi was utilized in the BPR implementation, where α represents the bias, βi corresponds to item-specific biases, and γu​ and γi are user and item latent factors, respectively. Functions for prediction, regularization, variable initialization, scoring, and the call function (defining loss) remained consistent with the textbook.
+In the optimization process, the Adam algorithm optimizer was employed with a learning rate of 0.1, determined through experimentation that indicated superior performance compared to alternative values like 0.01 and 0.001. The parameter k, representing the number of negative samples for any positive sample, was explored across different values (1-6), ultimately aligning with the suggested value in the textbook (k=5) due to better outcomes. The regularization parameter λ was fine-tuned, with 0.00001 yielding optimal results in comparison to 0.01 or 0.001.
+The training process, implemented in the trainingStepBPR function, followed the methodology outlined in the textbook. The model underwent training with varying epoch values, ranging from 100 to 500. The choice of 150 epochs was settled upon, as it delivered the highest accuracy.
+Moving to the next phase, certain functions from the HW3 solution, like the generation of a negative set, were employed. Two distinct lists were created for played and not-played games, amalgamated into a combination set, and transformed into a binary list (0s and 1s). A simple loop through this combination set allowed for the calculation of accuracy, yielding approximately 75%. 
+The approach to generating predictions file, was similar to the baseline code format. Additionally, considerations were made for scenarios where a user might be new. In such cases, predictions were made by evaluating the popularity of a game. A popularity dictionary for each game was generated, and the median popularity was calculated using the statistics library. Predictions were set to 1 if the game's popularity exceeded the median and 0 otherwise. For situations where both the user and game were absent in the dataset, predictions defaulted to 0.
+Accuracy Rate on Gradescope: 73.43%
+
+
+{Time Played Prediction}: 
+In this section, the Latent Factor Model (LFM), a recommendation technique that achieves its results by projecting users and items into a low-dimensional space, was implemented, as outlined in the Recommendation Lecture notes. Latent Factor Models prove particularly effective in scenarios involving real-valued predictions, commonly associated with regression tasks. For the implementation in question, TensorFlow was employed, utilizing a basic code structure outlined in the textbook.
+The prediction function f(u,i)=α+βi+βu+γu⋅γi was utilized in the LFM implementation, where α represents the bias, βi corresponds to item-specific biases, βu corresponds to user-specific biases and γu​ and γi are user and item latent factors, respectively. Several adjustments were made to the LatentFactorModel class functions. Primarily, for initialization, α remained constant, equivalent to the mean rating (μ). Additionally, βi​ and βu​ were modified, initialized not as random small variables, but rather as lists of zeros with lengths corresponding to the number of users and items, respectively. γu​ and γi​ were also initialized as zero lists with lengths equivalent to the userIDs and itemIDs. 
+Prediction, regularization functions, prediction for a sample of instances, and loss functions remained unaltered. The trainingStep function also saw minimal modification, returning the objective, mean squared error (MSE), and learning rate.
+The parameter values leading to the minimal MSE in my case were as follows:
+epoch = 7000
+K = 2
+lamb = 1
+learning_rate = 0.01
+In the optimization process, the Adam algorithm optimizer was employed with a learning rate of 0.01, determined through experimentation, showcasing superior performance compared to alternative values such as 0.1, 0.001, 0.0001, etc. Rather than implementing an early stopping method, I chose to utilize Tensorboard to gain a comprehensive understanding of my model's training progression. All of the progress was saved into a output.txt file which an instance of it can be seen below:
+WARNING:absl:At this time, the v2.11+ optimizer `tf.keras.optimizers.Adam` runs slowly on M1/M2 Macs, please use the legacy Keras optimizer instead, located at `tf.keras.optimizers.legacy.Adam`.
+iteration 0, objective = 5.340044, lr = 0.01
+Saved checkpoint for epoch 0: ./checkpoints/ckpt-1
+iteration 1, objective = 5.2138743, lr = 0.01
+Saved checkpoint for epoch 1: ./checkpoints/ckpt-2
+iteration 2, objective = 5.219648, lr = 0.01
+Saved checkpoint for epoch 2: ./checkpoints/ckpt-3
+iteration 3, objective = 5.1549106, lr = 0.01
+Saved checkpoint for epoch 3: ./checkpoints/ckpt-4
+iteration 4, objective = 5.2161336, lr = 0.01
+Saved checkpoint for epoch 4: ./checkpoints/ckpt-5
+iteration 5, objective = 5.168009, lr = 0.01
+Saved checkpoint for epoch 5: ./checkpoints/ckpt-6
+iteration 6, objective = 5.124828, lr = 0.01
+
+
+Checking Tensorboard regularly, helped picking the lowest MSE. 
+At the end, all the checkpoints were saved in the Checkpoints directory. 
+MSE on Gradescope: 3.059574840830326
+
+
+{Important Note}:
+Validation set and training set were split at beginning but for submitting to the leaderboard, the full dataset was utilized.
