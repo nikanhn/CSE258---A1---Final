@@ -1,4 +1,4 @@
-# CSE258---A1---Final
+# Steam Game Recommender
 This project focuses on building recommender systems to make predictions related to video game reviews from the Steam platform. 
 Two main prediction tasks are addressed: play prediction and time played prediction.
 Overview
